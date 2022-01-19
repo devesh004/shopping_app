@@ -8,6 +8,18 @@ const {
   verifyTokenAndAdmin,
 } = require("./verifyToken");
 
+router.post("/", verifyTokenAndAdmin, async (req, res) => {
+  const newUser = new User(req.body);
+  // console.log(newUser);
+  try {
+    const savedUser = await newUser.save();
+    // console.log(savedUser);
+    res.status(200).json(savedUser);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 router.put("/:id", verifyTokenAndAuth, async (req, res) => {
   if (req.body.password) {
     req.body.password = CryptoJS.AES.encrypt(
@@ -50,12 +62,15 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
 
 router.get("/allUsers", verifyTokenAndAdmin, async (req, res) => {
   const query = req.query.new;
+  // console.log("HELLLOOO ");
   try {
     const users = query
-      ? await User.find().sort({ _id: -1 }).limit(10)
+      ? await User.find().sort({ _id: -1 }).limit(5)
       : await User.find();
+    // console.log(users);
     res.status(200).json(users);
-  } catch {
+  } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 });

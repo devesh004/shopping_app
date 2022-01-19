@@ -55,4 +55,10 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/logout", (req, res, next) => {
+  console.log("HELOO");
+  req.headers.token = "";
+  res.status(200).json("Logged Out Successfully!");
+});
+
 module.exports = router;

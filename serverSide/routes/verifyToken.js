@@ -7,9 +7,11 @@ const verifyToken = (req, res, next) => {
     const token = authHeader.split(" ")[1];
     jwt.verify(token, process.env.JWT_SECRET, (err, data) => {
       if (err) {
+        console.log("TOKEN ERRORRRR    ", err);
         res.status(403).json("Token not valid!");
       }
       req.user = data;
+      // console.log("GOT THE USER   ", req.user);
       next();
     });
   } else {
