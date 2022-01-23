@@ -5,21 +5,22 @@ const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
 
 router.post("/register", async (req, res) => {
-  const { username, email, password } = req.body;
-  const newUser = new User({
-    username: username,
-    email: email,
-    password: CryptoJS.AES.encrypt(
-      password,
-      process.env.SECRET_PASS
-    ).toString(),
-  });
+  const newUser = new User(req.body);
+  // console.log(newUser.active);
+  const pass = CryptoJS.AES.encrypt(
+    newUser.password,
+    process.env.SECRET_PASS
+  ).toString();
+  newUser.password = pass;
   try {
     const savedUser = await newUser.save();
-    res.status(201).json(savedUser);
+    // console.log(savedUser);
+    const { password, ...others } = savedUser._doc;
+    // console.log("OTHERS ARE ", others);
+    res.status(200).json(others);
   } catch (err) {
-    res.status(500).json(err);
     console.log(err);
+    res.status(500).json(err);
   }
 });
 

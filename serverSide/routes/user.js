@@ -11,6 +11,11 @@ const {
 router.post("/", verifyTokenAndAdmin, async (req, res) => {
   const newUser = new User(req.body);
   // console.log(newUser);
+  const pass = CryptoJS.AES.encrypt(
+    newUser.password,
+    process.env.SECRET_PASS
+  ).toString();
+  newUser.password = pass;
   try {
     const savedUser = await newUser.save();
     // console.log(savedUser);
