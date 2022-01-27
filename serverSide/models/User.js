@@ -32,6 +32,7 @@ const UserSchema = new mongoose.Schema(
     img: { type: String },
     active: {
       type: Boolean,
+      default: true,
     },
     gender: {
       type: String,

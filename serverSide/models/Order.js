@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Product = require("./Product");
 
 const OrderSchema = new mongoose.Schema(
   {
@@ -8,13 +9,8 @@ const OrderSchema = new mongoose.Schema(
     },
     products: [
       {
-        productId: {
-          type: String,
-        },
-        quantity: {
-          type: Number,
-          default: 1,
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
       },
     ],
     amount: {

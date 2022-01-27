@@ -22,14 +22,21 @@ router.post("/", verifyToken, async (req, res) => {
 });
 
 router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
+  const query = req.query.status;
+  // console.log(query);
   try {
-    const updatedOrder = await Order.findByIdAndUpdate(
-      req.params.id,
-      {
-        $set: req.body,
-      },
-      { new: true }
-    );
+    const updatedOrder = query
+      ? await Order.findByIdAndUpdate(req.params.id, {
+          $set: { status: query },
+        })
+      : await Order.findByIdAndUpdate(
+          req.params.id,
+          {
+            $set: req.body,
+          },
+          { new: true }
+        );
+    console.log(updatedOrder);
     res.status(200).json(updatedOrder);
   } catch (err) {
     res.status(500).json(err);
@@ -55,8 +62,11 @@ router.get("/find/:userId", verifyTokenAndAuth, async (req, res) => {
 });
 
 router.get("/allOrders", verifyTokenAndAdmin, async (req, res) => {
+  const query = req.query.new;
   try {
-    const orders = await Order.find();
+    const orders = query
+      ? await Order.find().sort({ _id: -1 }).limit(5)
+      : await Order.find();
     res.status(200).json(orders);
   } catch (err) {
     res.status(500).json(err);

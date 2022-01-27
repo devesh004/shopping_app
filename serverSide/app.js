@@ -20,11 +20,18 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("HOME PAGE");
 });
+
 app.use("/users", userRoute);
 app.use("/auth", authRoute);
 app.use("/products", productRoute);
 app.use("/orders", orderRoute);
 app.use("/checkout", stripeRoute);
+
+app.use(express.static(path.join(__dirname, "/client_admin/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "/client_admin/build", "index.html"));
+});
 
 app.listen(process.env.PORT || 3000, () => {
   console.log("listing port 3000");
