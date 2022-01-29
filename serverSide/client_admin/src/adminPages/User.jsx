@@ -191,9 +191,11 @@ const User = () => {
   );
   const { currentUser } = useSelector((state) => state.user);
   // console.log(path);
+  let createButton = true;
   if (path === "user") {
     user = currentUser;
     userId = currentUser._id;
+    createButton = false;
   }
 
   const [inputs, setInputs] = useState({});
@@ -248,8 +250,13 @@ const User = () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           const user = { ...inputs, img: downloadURL };
           const id = userId;
-          updateUser(user, id, dispatch);
-          navigate(`/user/${id}`);
+          if (currentUser._id === userId) {
+            updateUser(user, id, dispatch, "current");
+            navigate(`/user/${userId}`);
+          } else {
+            updateUser(user, id, dispatch);
+            navigate(`/adminUser/${userId}`);
+          }
         });
       }
     );
@@ -258,9 +265,11 @@ const User = () => {
     <Container>
       <UserTitleContainer>
         <UserTitle>Edit User</UserTitle>
-        <Link to="/newUser">
-          <CreateUser>Create</CreateUser>
-        </Link>
+        {createButton && (
+          <Link to="/newUser">
+            <CreateUser>Create</CreateUser>
+          </Link>
+        )}
       </UserTitleContainer>
       <UserContainer>
         <UserShow>
@@ -330,7 +339,6 @@ const User = () => {
                 <Input
                   type="text"
                   name="username"
-                  placeholder={user.username}
                   value={inputs.username}
                   onChange={inputChange}
                 />
@@ -340,7 +348,6 @@ const User = () => {
                 <Input
                   type="text"
                   name="name"
-                  placeholder={user.name}
                   value={inputs.name}
                   onChange={inputChange}
                 />
@@ -350,7 +357,6 @@ const User = () => {
                 <Input
                   type="text"
                   name="email"
-                  placeholder={user.email}
                   value={inputs.email}
                   onChange={inputChange}
                 />
@@ -360,7 +366,6 @@ const User = () => {
                 <Input
                   type="text"
                   name="phoneNo"
-                  placeholder={user.phoneNo}
                   value={inputs.phoneNo}
                   onChange={inputChange}
                 />
@@ -370,14 +375,28 @@ const User = () => {
                 <Input
                   type="text"
                   name="address"
-                  placeholder={user.address}
                   value={inputs.address}
                   onChange={inputChange}
                 />
               </UserUpdateItem>
               <UserUpdateItem>
+                <Label>Password*</Label>
+                <Input
+                  type="text"
+                  name="password"
+                  placeholder="Please provide password"
+                  required
+                  onChange={inputChange}
+                />
+              </UserUpdateItem>
+              <UserUpdateItem>
                 <Label>Active</Label>
-                <ActiveSelect name="active" id="active" onChange={inputChange}>
+                <ActiveSelect
+                  name="active"
+                  id="active"
+                  onChange={inputChange}
+                  value={inputs.active}
+                >
                   <Option value="yes">Yes</Option>
                   <Option value="no">No</Option>
                 </ActiveSelect>

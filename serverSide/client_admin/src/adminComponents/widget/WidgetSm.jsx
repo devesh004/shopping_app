@@ -61,7 +61,8 @@ const Button = styled.button`
   }
 `;
 const WidgetSm = () => {
-  const users = useSelector((state) => state.user.users).slice(0, 5);
+  let users = useSelector((state) => state.user.users);
+  users = users.slice(0, 5);
   const dispatch = useDispatch();
   useEffect(() => {
     getUsers(dispatch);
@@ -70,28 +71,29 @@ const WidgetSm = () => {
     <Container>
       <Title>New Joined Members</Title>
       <MemberList>
-        {users.map((user) => (
-          <MemberItem key={user._id}>
-            <Image
-              src={
-                user.img ||
-                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-              }
-            />
-            <UserInfo>
-              <Username>{user.username}</Username>
-            </UserInfo>
-            <Link
-              style={{ textDecoration: "none" }}
-              to={`/adminUser/${user._id}`}
-            >
-              <Button>
-                <Visibility className="visibility" />
-                Display
-              </Button>
-            </Link>
-          </MemberItem>
-        ))}
+        {users &&
+          users.map((user) => (
+            <MemberItem key={user._id}>
+              <Image
+                src={
+                  user.img ||
+                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                }
+              />
+              <UserInfo>
+                <Username>{user.username}</Username>
+              </UserInfo>
+              <Link
+                style={{ textDecoration: "none" }}
+                to={`/adminUser/${user._id}`}
+              >
+                <Button>
+                  <Visibility className="visibility" />
+                  Display
+                </Button>
+              </Link>
+            </MemberItem>
+          ))}
       </MemberList>
     </Container>
   );

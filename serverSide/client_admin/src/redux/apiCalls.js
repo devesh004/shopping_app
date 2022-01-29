@@ -18,6 +18,7 @@ import {
   deleteUserStart,
   deleteUserSuccess,
   deleteUserFailure,
+  updateCurrentUser,
 } from "./userRedux";
 import {
   getProductFailure,
@@ -44,6 +45,7 @@ import {
   updateOrderStart,
   updateOrderSuccess,
   updateOrderFailure,
+  emptyOrders,
 } from "./orderRedux";
 import { publicRequest, userRequest } from "../requestMethods";
 
@@ -51,6 +53,7 @@ export const logoutUser = async (dispatch) => {
   try {
     const res = await publicRequest.get("/auth/logout");
     dispatch(logout());
+    dispatch(emptyOrders());
   } catch (err) {
     console.log(err);
   }
@@ -60,19 +63,36 @@ export const login = async (dispatch, user) => {
   dispatch(loginStart());
   try {
     const res = await publicRequest.post("/auth/login", user);
+    // console.log(res.data);
+    dispatch(loginSuccess(res.data));
     setTimeout(() => {
       logoutUser();
     }, 259200000);
-    dispatch(loginSuccess(res.data));
   } catch (err) {
     dispatch(loginFailure());
   }
 };
 
-export const getProducts = async (dispatch) => {
+export const registerUser = async (user, dispatch) => {
+  dispatch(registerUserStart());
+  try {
+    const res = await publicRequest.post("/auth/register", user);
+    setTimeout(() => {
+      logoutUser();
+    }, 259200000);
+    dispatch(registerUserSuccess(res.data));
+  } catch (err) {
+    console.log(err);
+    dispatch(registerUserFailure());
+  }
+};
+
+export const getProducts = async (dispatch, cat) => {
   dispatch(getProductStart());
   try {
-    const res = await publicRequest.get("/products/allProducts");
+    const res = await publicRequest.get(
+      `/products/allProducts?category=${cat}`
+    );
     dispatch(getProductSuccess(res.data));
   } catch (err) {
     dispatch(getProductFailure());
@@ -130,26 +150,15 @@ export const addUser = async (user, dispatch) => {
   }
 };
 
-export const registerUser = async (user, dispatch) => {
-  dispatch(registerUserStart());
-  try {
-    const res = await publicRequest.post("/auth/register", user);
-    setTimeout(() => {
-      logoutUser();
-    }, 259200000);
-    dispatch(registerUserSuccess(res.data));
-  } catch (err) {
-    console.log(err);
-    dispatch(registerUserFailure());
-  }
-};
-
-export const updateUser = async (user, id, dispatch) => {
+export const updateUser = async (user, id, dispatch, current) => {
   dispatch(updateUserStart());
   try {
     const res = await userRequest.put(`/users/${id}`, user);
     const Updateduser = res.data;
     dispatch(updateUserSuccess(Updateduser, id));
+    if (current === "current") {
+      dispatch(updateCurrentUser(Updateduser));
+    }
   } catch (err) {
     dispatch(updateUserFailure());
   }

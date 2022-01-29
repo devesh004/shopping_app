@@ -23,6 +23,8 @@ const userSlice = createSlice({
     logout: (state) => {
       state.currentUser = null;
       state.users = [];
+      state.isFetching = false;
+      state.error = false;
     },
     getUsersStart: (state, action) => {
       state.isFetching = true;
@@ -91,6 +93,11 @@ const userSlice = createSlice({
       state.error = true;
       state.isFetching = false;
     },
+    updateCurrentUser: (state, action) => {
+      state.error = false;
+      state.isFetching = false;
+      state.currentUser = action.payload;
+    },
   },
 });
 
@@ -114,5 +121,6 @@ export const {
   deleteUserStart,
   deleteUserSuccess,
   deleteUserFailure,
+  updateCurrentUser,
 } = userSlice.actions;
 export default userSlice.reducer;

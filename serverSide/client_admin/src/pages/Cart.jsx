@@ -8,7 +8,7 @@ import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
 import StripeCheckout from "react-stripe-checkout";
 import { useEffect, useState } from "react";
-import { userRequest } from "../requestMethods";
+import { publicRequest } from "../requestMethods";
 import { Link, useNavigate } from "react-router-dom";
 
 const KEY = process.env.REACT_APP_STRIPE;
@@ -171,7 +171,7 @@ const Cart = () => {
     const requestFun = async () => {
       try {
         // console.log("out-1");
-        const res = await userRequest.post("checkout/payment", {
+        const res = await publicRequest.post("checkout/payment", {
           token: stripeToken,
         });
         // console.log("out-2");
@@ -260,7 +260,7 @@ const Cart = () => {
             </SummaryItem>
             <StripeCheckout
               name="Mannar"
-              image="https://avatars.githubusercontent.com/u/1486366?v=4"
+              image="https://images.unsplash.com/photo-1554692918-08fa0fdc9db3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
               billingAddress
               shippingAddress
               description={`Your total is $${cart.total}`}

@@ -9,10 +9,10 @@ const {
 } = require("./verifyToken");
 
 router.post("/", verifyToken, async (req, res) => {
-  // console.log(req.body);
+  console.log(req.body);
   const newOrder = new Order(req.body);
   try {
-    console.log("YOU TRIED WELL ENOUGH!");
+    // console.log("YOU TRIED WELL ENOUGH!");
     const savedOrder = await newOrder.save();
     res.status(200).json(savedOrder);
   } catch (err) {
@@ -66,7 +66,7 @@ router.get("/allOrders", verifyTokenAndAdmin, async (req, res) => {
   try {
     const orders = query
       ? await Order.find().sort({ _id: -1 }).limit(5)
-      : await Order.find();
+      : await Order.find().sort({ id: -1 });
     res.status(200).json(orders);
   } catch (err) {
     res.status(500).json(err);

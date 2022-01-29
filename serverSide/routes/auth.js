@@ -17,7 +17,16 @@ router.post("/register", async (req, res) => {
     // console.log(savedUser);
     const { password, ...others } = savedUser._doc;
     // console.log("OTHERS ARE ", others);
-    res.status(200).json(others);
+    const accessToken = jwt.sign(
+      {
+        id: savedUser._id,
+        isAdmin: savedUser.isAdmin,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "3d" }
+    );
+
+    res.status(200).json({ ...others, accessToken });
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
@@ -26,6 +35,7 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { username } = req.body;
+  // console.log(username);
   try {
     const user = await User.findOne({ username: username });
     if (!user) {
@@ -49,6 +59,7 @@ router.post("/login", async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "3d" }
     );
+    // console.log(others);
     res.status(200).json({ ...others, accessToken });
   } catch (err) {
     console.log(err);
@@ -57,7 +68,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/logout", (req, res, next) => {
-  console.log("HELOO");
+  // console.log("LOGOUT");
   req.headers.token = "";
   res.status(200).json("Logged Out Successfully!");
 });

@@ -1,6 +1,10 @@
 import axios from "axios";
 
-const BaseUrl = "https://shopping-app04.herokuapp.com/";
+let BaseUrl = "https://shopping-app04.herokuapp.com/api/";
+if (process.env.NODE_ENV === "development") {
+  BaseUrl = "http://localhost:3000/api/";
+}
+
 let Token = null;
 if (
   localStorage.getItem("persist:root") &&
