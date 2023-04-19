@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let BaseUrl = "https://e-commerce-frontend-m0v7.onrender.com/api/";
+let BaseUrl = process.env.BASE_URL || "https://backend-mpwz.onrender.com/api/";
 if (process.env.NODE_ENV === "development") {
   BaseUrl = "http://localhost:3001/api/";
 }
@@ -15,7 +15,7 @@ if (
     .currUser.accessToken;
 }
 
-console.log(Token);
+// console.log(Token);
 
 export const publicRequest = axios.create({
   baseURL: BaseUrl,
